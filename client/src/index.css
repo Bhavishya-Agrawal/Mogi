@@ -1,0 +1,145 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-hand: "Caveat", "Comic Sans MS", cursive;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --color-ink: #0b2027;
+  --color-ink-soft: #4b636b;
+  --color-paper: #edf2f4;
+  --color-paper-deep: #dae3e7;
+  --color-sheet: #f8fbfc;
+  --color-pen: #ef233c;
+  --color-pen-dark: #c91a2f;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+  ::selection {
+    background: var(--color-pen);
+    color: #fff;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-pen);
+    outline-offset: 2px;
+  }
+  button { cursor: pointer; }
+  button:disabled { cursor: not-allowed; }
+}
+
+@layer components {
+  /* faint dot grid, used on the landing and auth pages only */
+  .dots {
+    background-image: radial-gradient(rgb(11 32 39 / 0.13) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: 2px solid var(--color-ink);
+    border-radius: 9999px;
+    padding: 0.65rem 1.4rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1.25;
+    background: var(--color-sheet);
+    color: var(--color-ink);
+    box-shadow: 3px 3px 0 0 var(--color-ink);
+    transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .btn:hover:not(:disabled) {
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0 0 var(--color-ink);
+  }
+  .btn:active:not(:disabled) {
+    transform: translate(3px, 3px);
+    box-shadow: 0 0 0 0 var(--color-ink);
+  }
+  .btn:disabled { opacity: 0.5; }
+  .btn-pen { background: var(--color-pen); color: #fff; }
+  .btn-pen:hover:not(:disabled) { background: var(--color-pen-dark); }
+  .btn-ink { background: var(--color-ink); color: var(--color-paper); box-shadow: 3px 3px 0 0 var(--color-pen); }
+  .btn-ink:hover:not(:disabled) { box-shadow: 4px 4px 0 0 var(--color-pen); }
+  .btn-ink:active:not(:disabled) { box-shadow: 0 0 0 0 var(--color-pen); }
+  .btn-quiet {
+    box-shadow: none;
+    border-color: transparent;
+    background: transparent;
+    font-weight: 600;
+  }
+  .btn-quiet:hover:not(:disabled) { background: var(--color-paper-deep); box-shadow: none; transform: none; }
+  .btn-sm { padding: 0.4rem 1rem; font-size: 0.9rem; box-shadow: 2px 2px 0 0 var(--color-ink); }
+
+  .field {
+    width: 100%;
+    border: 2px solid var(--color-ink);
+    border-radius: 0.85rem;
+    background: var(--color-sheet);
+    padding: 0.7rem 0.9rem;
+    font-size: 1rem;
+    color: var(--color-ink);
+  }
+  .field::placeholder { color: var(--color-ink-soft); opacity: 0.7; }
+  .field:disabled { background: var(--color-paper-deep); color: var(--color-ink-soft); }
+  .field:focus-visible { outline-offset: 0; }
+
+  .label { display: block; margin-bottom: 0.35rem; font-weight: 600; font-size: 0.95rem; }
+
+  /* the red pen drawing itself (used for circles and underlines) */
+  .pen {
+    stroke: var(--color-pen);
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: pen-draw 0.8s cubic-bezier(0.5, 0, 0.2, 1) forwards;
+    animation-delay: var(--d, 0s);
+  }
+  .note {
+    font-family: var(--font-hand);
+    font-weight: 600;
+    color: var(--color-pen);
+    line-height: 1;
+    opacity: 0;
+    animation: note-in 0.4s ease forwards;
+    animation-delay: var(--d, 0s);
+  }
+}
+
+@keyframes pen-draw { to { stroke-dashoffset: 0; } }
+@keyframes note-in { to { opacity: 1; } }
+@keyframes rec-ring {
+  0% { transform: scale(1); opacity: 0.55; }
+  100% { transform: scale(1.7); opacity: 0; }
+}
+@keyframes slide-bar {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(260%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pen { animation: none; stroke-dashoffset: 0; }
+  .note { animation: none; opacity: 1; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
