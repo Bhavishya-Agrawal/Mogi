@@ -5,6 +5,61 @@ import Logo from '../components/Logo'
 import { useAuth } from '../context/AuthContext'
 import { CONTACT_EMAIL } from '../config'
 
+function Note({ children, delay = 0, className = '' }) {
+  return (
+    <p className={`note flex items-start gap-1.5 text-[1.65rem] ${className}`} style={{ '--d': `${delay}s` }}>
+      <svg aria-hidden="true" width="30" height="24" viewBox="0 0 30 24" className="mt-0.5 shrink-0 overflow-visible">
+        <path className="pen" pathLength="1" strokeWidth="2.2" style={{ '--d': `${delay}s` }} d="M27 21C15 21 6 15 4 4M4 4L3 12M4 4L12 7" />
+      </svg>
+      <span className="-rotate-2">{children}</span>
+    </p>
+  )
+}
+
+const Bar = ({ w }) => <div className="h-2.5 rounded-full bg-paper-deep" style={{ width: w }} />
+
+function ResumeSheet() {
+  return (
+    <div className="relative mx-auto w-full max-w-md rotate-[1.5deg] rounded-md border-2 border-ink bg-sheet p-6 shadow-[8px_8px_0_0_var(--color-ink)] sm:p-8">
+      <div className="mb-5 space-y-2">
+        <div className="h-5 w-44 rounded-full bg-ink" />
+        <Bar w="11rem" />
+      </div>
+
+      <h2 className="font-display text-lg font-bold">Projects</h2>
+      <div className="mt-3 space-y-5">
+        <div>
+          <p className="font-semibold">Realtime chat app</p>
+          <p className="mt-1 leading-relaxed text-ink-soft">
+            Built with Node.js, Socket.io and{' '}
+            <span className="font-semibold text-ink">Redis</span>{' '}
+            to serve{' '}
+            <span className="font-semibold text-ink">10k concurrent users</span>.
+          </p>
+          <Note className="mt-3 pl-8">why Redis? what breaks without it?</Note>
+        </div>
+
+        <div>
+          <p className="font-semibold">Inventory dashboard</p>
+          <p className="mt-1 leading-relaxed text-ink-soft">
+            Cut API latency by{' '}
+            <span className="font-semibold text-ink">40%</span>{' '}
+            across all endpoints.
+          </p>
+          <Note className="mt-3 pl-8">measured how?</Note>
+        </div>
+      </div>
+
+      <h2 className="mt-6 font-display text-lg font-bold">Experience</h2>
+      <div className="mt-3 space-y-2">
+        <Bar w="70%" />
+        <Bar w="85%" />
+        <Bar w="55%" />
+      </div>
+    </div>
+  )
+}
+
 const steps = [
   {
     title: 'Drop in your resume',
@@ -36,15 +91,15 @@ export default function Home() {
 
   return (
     <div>
-      <div className="flex min-h-screen flex-col">
+      <div>
         <PublicNav />
 
-        <section className="flex flex-1 items-center justify-center px-5 py-16 text-center md:px-8 lg:py-20">
-          <div className="mx-auto max-w-4xl">
+        <section className="mx-auto grid max-w-6xl items-center gap-14 px-5 pb-20 pt-8 md:px-8 lg:grid-cols-[1.1fr_0.9fr] lg:pb-28 lg:pt-14">
+          <div>
             <h1 className="text-[clamp(2.6rem,7.2vw,5.4rem)] font-extrabold leading-[0.98] tracking-tight">
               Attend your first AI mock interview today.
             </h1>
-            <div className="mt-9 flex flex-wrap justify-center gap-4">
+            <div className="mt-9 flex flex-wrap gap-4">
               {user ? (
                 <Link to="/dashboard" className="btn btn-pen">Go to your dashboard</Link>
               ) : (
@@ -55,6 +110,8 @@ export default function Home() {
               )}
             </div>
           </div>
+
+          <ResumeSheet />
         </section>
       </div>
 
