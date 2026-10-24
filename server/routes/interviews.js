@@ -14,15 +14,21 @@ const {
 
 const router = express.Router();
 
+const vercelLimit = process.env.VERCEL ? 4 * 1024 * 1024 : null;
+const maxResumeBytes = vercelLimit || 10 * 1024 * 1024;
+const maxAudioBytes = vercelLimit || 25 * 1024 * 1024;
+const maxResumeMb = Math.floor(maxResumeBytes / 1024 / 1024);
+const maxAudioMb = Math.floor(maxAudioBytes / 1024 / 1024);
+
 // memoryStorage: the PDF lives in RAM only and is never written to disk
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 10 * 1024 * 1024, files: 1 },
+  limits: { fileSize: maxResumeBytes, files: 1 },
 });
 
 const audioUpload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 25 * 1024 * 1024, files: 1 },
+  limits: { fileSize: maxAudioBytes, files: 1 },
 });
 
 const startLimiter = rateLimit({
@@ -37,7 +43,7 @@ function handleResumeUpload(req, res, next) {
   upload.single('resume')(req, res, (error) => {
     if (!error) return next();
     if (error instanceof multer.MulterError && error.code === 'LIMIT_FILE_SIZE') {
-      return res.status(413).json({ error: 'Resume must be 10 MB or smaller' });
+      return res.status(413).json({ error: `Resume must be ${maxResumeMb} MB or smaller` });
     }
     return res.status(400).json({ error: 'Unable to process the resume upload' });
   });
@@ -47,7 +53,7 @@ function handleVoiceUpload(req, res, next) {
   audioUpload.single('audio')(req, res, (error) => {
     if (!error) return next();
     if (error instanceof multer.MulterError && error.code === 'LIMIT_FILE_SIZE') {
-      return res.status(413).json({ error: 'Voice recording must be 25 MB or smaller' });
+      return res.status(413).json({ error: `Voice recording must be ${maxAudioMb} MB or smaller` });
     }
     return res.status(400).json({ error: 'Unable to process the voice recording' });
   });

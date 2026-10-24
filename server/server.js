@@ -30,11 +30,10 @@ app.use((error, req, res, next) => {
   return res.status(500).json({ error: 'Internal server error' });
 });
 
-const PORT = process.env.PORT || 5000;
-
 async function startServer() {
   try {
     await connectDB();
+    const PORT = process.env.PORT || 5000;
     app.listen(PORT, () => console.log(`Mogi API running on port ${PORT}`));
   } catch (error) {
     console.error(`Failed to start server: ${error.message}`);
@@ -42,4 +41,6 @@ async function startServer() {
   }
 }
 
-startServer();
+if (require.main === module) startServer();
+
+module.exports = { app, startServer };

@@ -10,7 +10,7 @@ An AI mock interview platform. Upload a resume PDF, and Mogi writes a 7-question
 You need Node 20+, a MongoDB instance (local or Atlas) and a GroqCloud API key.
 
 ```bash
-npm run install:all          # installs server + client
+npm run install:all          # installs server + client workspaces
 
 cd server
 copy .env.example .env       # then fill in MONGO_URI, JWT_SECRET and GROQ_API_KEY
@@ -26,11 +26,33 @@ npm run client               # app on http://localhost:5173
 The client dev server proxies `/api` to port 5000, so there is nothing else to configure locally.
 Voice recording needs a browser with microphone access, IndexedDB and MediaRecorder (Chrome and Edge are supported).
 
+## Deploy to Vercel
+
+The repository is configured to deploy the React app and Express API together as a Vercel project. The API runs as a Node.js function, MongoDB connections are reused between warm invocations, and client-side routes fall back to the Vite app.
+
+1. Push this repository to GitHub, then sign in to [Vercel](https://vercel.com/) and choose **Add New → Project**.
+2. Import the repository. Leave **Root Directory** set to the repository root. Vercel reads `vercel.json` for the install command, client build output, API function, and SPA routing.
+3. In the project's **Settings → Environment Variables**, add these values for **Production**, **Preview**, and **Development** as needed:
+
+   | Name | Value |
+   | --- | --- |
+   | `MONGO_URI` | Your MongoDB Atlas connection string. In Atlas, allow connections from Vercel (or use `0.0.0.0/0` if you cannot use a fixed IP allowlist). |
+   | `JWT_SECRET` | A long, random secret used to sign login tokens. |
+   | `GROQ_API_KEY` | Your GroqCloud API key. |
+   | `GROQ_MODEL` | Optional; defaults to `openai/gpt-oss-120b`. |
+
+   Do not add `VITE_API_URL` for this setup: the deployed frontend calls `/api` on the same domain. The Groq and MongoDB credentials are server-only; do not prefix them with `VITE_`.
+4. Click **Deploy**. Future pushes to the connected branch trigger new deployments. Set a custom domain under **Settings → Domains** if desired.
+5. After deployment, open `https://<your-domain>/api/health`; a working API returns `{"status":"API is running"}`. Test account registration and one interview end-to-end.
+
+Vercel Functions limit request payloads, so this deployment caps resume PDFs and individual voice recordings at 4 MB (other local/non-Vercel runs retain the 10 MB and 25 MB limits). Vercel functions can run for up to five minutes on the supported plans; this project configures that maximum because interview generation and transcription call external AI services. If your plan has a lower function-duration limit, reduce the `maxDuration` value in `vercel.json` to match it.
+
 ## Folder map
 
 ```
 server/
-  server.js                    app setup, env check, error handler
+  server.js                    app setup, local server entry point, error handler
+  config/db.js                 MongoDB connection reused by Vercel function instances
   routes/                      auth.js, interviews.js (in-memory PDF/audio uploads)
   controllers/                 authController.js, interviewController.js
   models/                      User.js, Interview.js (script, answers and report in one document)
@@ -45,6 +67,7 @@ client/src/
   hooks/useVoiceRecorder.js    microphone -> local recording
   lib/                         api.js (axios + JWT), speech.js (browser text -> voice), voiceRecordings.js (IndexedDB)
   context/AuthContext.jsx
+api/[...path].js               Vercel function entry point for the Express API
 ```
 
 ## How an interview flows
@@ -73,5 +96,5 @@ client/src/
 - GroqCloud may rate-limit requests. The server retries 429/5xx with backoff and the start route allows 5 interviews per 15 minutes per IP. Change it in `routes/interviews.js`.
 - Voice recordings stay in browser IndexedDB until Finish, when they are uploaded one at a time to GroqCloud's Whisper transcription endpoint. Each local audio file is deleted after its transcript is saved to the interview. Audio is held in server memory only and is not stored in the database.
 - Monaco loads from a CDN, so the code editor needs an internet connection.
-- Deploying: set `VITE_API_URL` on the client build (for example `https://your-api.example.com/api`) and `CLIENT_URL` on the server. Mic access needs HTTPS in production.
+- For a separately hosted API, set `VITE_API_URL` on the client build (for example `https://your-api.example.com/api`) and configure that host's environment and CORS policy. Mic access needs HTTPS in production.
 - The contact email shown on the landing page is a placeholder in `client/src/config.js`.

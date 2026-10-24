@@ -2,9 +2,8 @@ import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FileText, Upload } from 'lucide-react'
 import api, { errorMessage } from '../lib/api'
+import { MAX_RESUME_BYTES, MAX_RESUME_MB } from '../lib/uploadLimits'
 import GeneratingOverlay from './GeneratingOverlay'
-
-const MAX_BYTES = 10 * 1024 * 1024
 
 // The dashboard's empty state: drop a resume PDF (or click) to start a new interview
 export default function UploadPanel({ hasHistory }) {
@@ -20,7 +19,7 @@ export default function UploadPanel({ hasHistory }) {
     if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
       return setError('Please choose a PDF file.')
     }
-    if (file.size > MAX_BYTES) return setError('That file is over 10 MB. Try a smaller PDF.')
+    if (file.size > MAX_RESUME_BYTES) return setError(`That file is over ${MAX_RESUME_MB} MB. Try a smaller PDF.`)
 
     const body = new FormData()
     body.append('resume', file)

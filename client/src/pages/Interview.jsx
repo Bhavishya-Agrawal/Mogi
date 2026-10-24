@@ -7,6 +7,7 @@ import { formatClock } from '../lib/format'
 import { speak, stopSpeaking, canSpeak } from '../lib/speech'
 import { useVoiceRecorder } from '../hooks/useVoiceRecorder'
 import { deleteVoiceRecording, getVoiceRecording } from '../lib/voiceRecordings'
+import { MAX_AUDIO_BYTES, MAX_AUDIO_MB } from '../lib/uploadLimits'
 import AppHeader from '../components/AppHeader'
 import Splash from '../components/Splash'
 import { LogoMark } from '../components/Logo'
@@ -171,6 +172,10 @@ export default function Interview() {
         if (!recording?.blob?.size) {
           setMissingRecordingIndex(questionIndex)
           throw new Error(`The saved audio for voice question ${questionIndex + 1} is missing from this browser. Return to that question and record it again.`)
+        }
+        if (recording.blob.size > MAX_AUDIO_BYTES) {
+          setMissingRecordingIndex(questionIndex)
+          throw new Error(`The recording for voice question ${questionIndex + 1} is over ${MAX_AUDIO_MB} MB. Return to that question and record a shorter answer.`)
         }
 
         const form = new FormData()
