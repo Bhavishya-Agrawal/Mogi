@@ -36,11 +36,11 @@ export default function Home() {
 
   return (
     <div>
-      <div>
+      <div className="flex min-h-screen flex-col">
         <PublicNav />
 
-        <section className="mx-auto max-w-4xl px-5 pb-20 pt-8 text-center md:px-8 lg:pb-28 lg:pt-14">
-          <div>
+        <section className="flex flex-1 items-center justify-center px-5 py-16 text-center md:px-8 lg:py-20">
+          <div className="mx-auto max-w-4xl">
             <h1 className="text-[clamp(2.6rem,7.2vw,5.4rem)] font-extrabold leading-[0.98] tracking-tight">
               Attend your first AI mock interview today.
             </h1>
