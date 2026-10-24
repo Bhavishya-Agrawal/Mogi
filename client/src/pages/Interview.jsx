@@ -58,7 +58,7 @@ const EDITOR_OPTIONS = {
 
 function Waiting({ title, children }) {
   return (
-    <div className="dots grid min-h-dvh place-items-center px-6">
+    <div className="grid min-h-dvh place-items-center bg-paper px-6">
       <div className="flex w-full max-w-sm flex-col items-center text-center">
         <div className="animate-pulse"><LogoMark size={56} /></div>
         <h1 className="mt-6 text-2xl font-extrabold">{title}</h1>

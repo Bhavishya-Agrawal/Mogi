@@ -42,12 +42,6 @@
 }
 
 @layer components {
-  /* faint dot grid, used on the landing and auth pages only */
-  .dots {
-    background-image: radial-gradient(rgb(11 32 39 / 0.13) 1px, transparent 1px);
-    background-size: 22px 22px;
-  }
-
   .btn {
     display: inline-flex;
     align-items: center;
@@ -116,19 +110,9 @@
     animation: pen-draw 0.8s cubic-bezier(0.5, 0, 0.2, 1) forwards;
     animation-delay: var(--d, 0s);
   }
-  .note {
-    font-family: var(--font-hand);
-    font-weight: 600;
-    color: var(--color-pen);
-    line-height: 1;
-    opacity: 0;
-    animation: note-in 0.4s ease forwards;
-    animation-delay: var(--d, 0s);
-  }
 }
 
 @keyframes pen-draw { to { stroke-dashoffset: 0; } }
-@keyframes note-in { to { opacity: 1; } }
 @keyframes rec-ring {
   0% { transform: scale(1); opacity: 0.55; }
   100% { transform: scale(1.7); opacity: 0; }
@@ -140,6 +124,5 @@
 
 @media (prefers-reduced-motion: reduce) {
   .pen { animation: none; stroke-dashoffset: 0; }
-  .note { animation: none; opacity: 1; }
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
