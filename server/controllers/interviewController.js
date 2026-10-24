@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+// Initialize PDF.js Node.js support before loading pdf-parse.
+const { CanvasFactory } = require('pdf-parse/worker');
 const { PDFParse } = require('pdf-parse');
 const Interview = require('../models/Interview');
 const { generateJSON, transcribeAudio } = require('../utils/groq');
@@ -31,7 +33,10 @@ async function startInterview(req, res) {
 
   // 1. Extract text from the PDF in memory. Nothing is written to disk.
   let resumeText;
-  const parser = new PDFParse({ data: req.file.buffer });
+  const parser = new PDFParse({
+    data: req.file.buffer,
+    CanvasFactory,
+  });
   try {
     const pdfData = await parser.getText();
     resumeText = (pdfData.text || '').trim();
