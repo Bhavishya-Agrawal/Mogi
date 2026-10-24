@@ -42,6 +42,12 @@
 }
 
 @layer components {
+  /* faint dot grid, used on the landing and auth pages only */
+  .dots {
+    background-image: radial-gradient(rgb(11 32 39 / 0.13) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
   .btn {
     display: inline-flex;
     align-items: center;

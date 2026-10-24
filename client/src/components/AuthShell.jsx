@@ -4,7 +4,7 @@ import Logo from './Logo'
 // Shared frame for the sign in / sign up pages: logo top-left, one card in the middle
 export default function AuthShell({ title, subtitle, children, footer }) {
   return (
-    <div className="min-h-dvh bg-paper">
+    <div className="dots min-h-dvh">
       <header className="mx-auto flex max-w-6xl items-center justify-between px-5 py-5 md:px-8">
         <Logo />
         <Link to="/" className="rounded-full px-4 py-2 font-medium hover:bg-paper-deep">Back to home</Link>

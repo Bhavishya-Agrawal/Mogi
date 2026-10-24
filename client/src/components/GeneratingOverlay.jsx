@@ -19,7 +19,7 @@ export default function GeneratingOverlay() {
   }, [])
 
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-paper px-6" role="status" aria-live="polite">
+    <div className="dots fixed inset-0 z-50 grid place-items-center bg-paper px-6" role="status" aria-live="polite">
       <div className="flex w-full max-w-sm flex-col items-center text-center">
         <div className="animate-pulse"><LogoMark size={56} /></div>
         <h2 className="mt-6 text-2xl font-extrabold">Preparing your interview</h2>

@@ -1,10 +1,12 @@
 import { useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import PublicNav from '../components/PublicNav'
+import PenCircle from '../components/PenCircle'
 import Logo from '../components/Logo'
 import { useAuth } from '../context/AuthContext'
 import { CONTACT_EMAIL } from '../config'
 
+// A margin note written in red pen, with a little arrow pointing back at the line above
 function Note({ children, delay = 0, className = '' }) {
   return (
     <p className={`note flex items-start gap-1.5 text-[1.65rem] ${className}`} style={{ '--d': `${delay}s` }}>
@@ -18,6 +20,7 @@ function Note({ children, delay = 0, className = '' }) {
 
 const Bar = ({ w }) => <div className="h-2.5 rounded-full bg-paper-deep" style={{ width: w }} />
 
+// The hero visual: a resume with the interviewer's red pen already on it
 function ResumeSheet() {
   return (
     <div className="relative mx-auto w-full max-w-md rotate-[1.5deg] rounded-md border-2 border-ink bg-sheet p-6 shadow-[8px_8px_0_0_var(--color-ink)] sm:p-8">
@@ -91,7 +94,7 @@ export default function Home() {
 
   return (
     <div>
-      <div>
+      <div className="dots">
         <PublicNav />
 
         <section className="mx-auto grid max-w-6xl items-center gap-14 px-5 pb-20 pt-8 md:px-8 lg:grid-cols-[1.1fr_0.9fr] lg:pb-28 lg:pt-14">

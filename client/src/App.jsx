@@ -11,7 +11,7 @@ import Logo from './components/Logo'
 
 function NotFound() {
   return (
-    <div className="grid min-h-dvh place-items-center bg-paper px-6 text-center">
+    <div className="dots grid min-h-dvh place-items-center px-6 text-center">
       <div>
         <Logo />
         <h1 className="mt-8 text-4xl font-extrabold">That page is not on the resume.</h1>
